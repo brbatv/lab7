@@ -1,0 +1,16 @@
+Package: lab7ab
+Type: Package
+Title: RC class for ridge regression
+Version: 1.0
+Date: 2017-09-28
+Author: Barakat Bruno [aut, cre],
+  De Biase Alessia [aut]
+Maintainer: Bruno Barakat <barakatbruno@gmail.com>
+Description: RC class named `address` to use geocoding and reverse geocoding from Google API.
+License: GPL
+Suggests:
+    testthat,
+    methods,
+    knitr,
+    rmarkdown
+RoxygenNote: 6.0.1

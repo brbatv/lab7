@@ -1,0 +1,14 @@
+---
+title: "RC class for Google Geooding API"
+author: "Bruno Barakat"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The lab7ab package provides a RC class named `address` to use geocoding and reverse geocoding from Google API.
+
+
