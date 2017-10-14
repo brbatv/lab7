@@ -7,10 +7,15 @@ Author: Barakat Bruno [aut, cre],
   De Biase Alessia [aut]
 Maintainer: Bruno Barakat <barakatbruno@gmail.com>
 Description: RC class named `address` to use geocoding and reverse geocoding from Google API.
+Depends: R(>= 2.10)
 License: GPL
 Suggests:
     testthat,
     methods,
     knitr,
-    rmarkdown
+    rmarkdown,
+    nycflights13,
+    dplyr,
+    ggplot2,
+    ggrepel
 RoxygenNote: 6.0.1
