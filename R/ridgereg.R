@@ -9,7 +9,7 @@
 #'@exportClass ridgereg
 #'@export ridgereg
 
-ridgereg<-setRefClass("ridgereg",fields=list(formula="forumula",beta_ridge="numeric",y_hat="numeric",name_of_data_input="character"),
+ridgereg<-setRefClass("ridgereg",fields=list(formula="formula",beta_ridge="numeric",y_hat="numeric",name_of_data_input="character"),
                      methods=list(
                        initialize=function(formula,data,lambda)
                        { 
@@ -32,6 +32,14 @@ ridgereg<-setRefClass("ridgereg",fields=list(formula="forumula",beta_ridge="nume
                          cat(" ")
                          cat(sep="\n")
                          cat(sep="      ",beta_ridge)
+                       },
+                       predict=function()
+                       {"Returns predicted values"
+                         return(y_hat)
+                       },
+                       coef=function()
+                       {"Returns ridge regression regression coefficients"
+                         return(beta_ridge)
                        }
                        
                      ))

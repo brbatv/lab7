@@ -17,6 +17,11 @@ Please look at the vignette.
 \item{\code{}}{}
 }}
 
+\section{Methods}{
+
+\describe{
+\item{\code{print()}}{Prints the input and the coefficients in a user-friedly way}
+}}
 
 \examples{
 my_address<-address$new("Linkoping university")
