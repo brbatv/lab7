@@ -13,9 +13,11 @@ In this file we try to predict the delay of each flight using the `ridgereg()` f
 
 ```{r include=FALSE}
 library(devtools)
+library(caret)
+library(nycflights13)
+library(dplyr)
 install_github("brbatv/lab7",force=TRUE)
 library(lab7ab)
-library(nycflights13)
 ```
 
 ## Cleaning "weather" and "flights" datasets:
@@ -27,7 +29,6 @@ The dataset weather has the following variables:
 ```{r echo=FALSE,warning=FALSE}
 colnames(weather)
 ```
-The variable which have a predictive value are: `origin`,`month`, `day`, `hour`, ``
 
 The dataset flights has the following variables:
 
@@ -35,9 +36,88 @@ The dataset flights has the following variables:
 colnames(flights)
 ```
 
-## Cleaning "weather" and "flights" datasets:
+The two datasets have some common variable such as: `year`,`month`, `day`, `origin`, `hour`, `time_hour` so a new dataset is created by adding extra informations to the `flights` dataset. 
 
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+```{r echo=FALSE,warning=FALSE}
+flights_weather <- left_join(flights, weather,by = c("year", "month", "day", "origin", "hour", "time_hour"))
 ```
 
+The weather variables are interesting to be selected for the prediction so the `database` has been created with the added columns:
+
+```{r warning=FALSE}
+database <- select(flights_weather,month,day, sched_dep_time,sched_arr_time, dep_delay, arr_delay,temp,dewp,wind_dir, wind_speed,wind_gust,precip,pressure,visib)
+```
+
+## Data partition: test, train and validation
+
+To use the `caret` package all the missing values need to be taked off from the database. 
+The data, at this point, have been splitted into three new dataset: 
+
+\itemize{
+
+\item *train* 80% of the observations
+\item *test* 5% of the observations
+\item *validation* 15% of the observations
+
+}
+
+```{r warning=FALSE}
+library(caret)
+set.seed(3456)
+database<-na.omit(database)
+
+trainIndex = createDataPartition(database$arr_delay, 
+                       p=0.8, list=FALSE,times=1)
+train = database[trainIndex,]
+notrain = database[-trainIndex,]
+validationIndex = createDataPartition(notrain$arr_delay, 
+                       p=0.75, list=FALSE,times=1)
+validation=database[validationIndex,]
+
+test = notrain[-validationIndex,]
+```
+
+## Training Ridge Regression
+
+Training on the train dataset the best value obtained for `lambda` is $10^{8}$.
+
+```{r warning=FALSE}
+#root mean squared arror
+rmse <- function(error){
+    sqrt(mean(error^2))
+}
+
+#formula for ridge regression
+formula=arr_delay~month+day+sched_dep_time+sched_arr_time+dep_delay+temp+dewp+wind_dir+ wind_speed+wind_gust+precip+pressure+visib 
+
+#training ridge regression for different values of lambda
+mod<-ridgereg$new(formula=formula, data=train,lambda=10^8)
+
+Y_validation<-validation$arr_delay
+Y_predicted <- mod$predict(datanew=validation)
+
+#calculating the error
+error= Y_predicted - Y_validation
+
+
+RMSE_check<-rmse(error)
+```
+
+## Best Lambda found for the predicted model
+
+The best lambda has been found, with it the test set has been predicted and the RMSE of the predicted model is:
+
+```{r echo=FALSE,warning=FALSE}
+
+best_lambda=10^8
+
+mod<-ridgereg$new(formula=formula, data=train,lambda=best_lambda)  
+  
+Y_test<-test$arr_delay
+Y_predicted2 <- mod$predict(datanew=test)
+
+error2= Y_predicted2 - Y_test
+
+RMSE_best_lambda<-rmse(error2)
+RMSE_best_lambda
+```

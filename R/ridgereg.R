@@ -57,9 +57,17 @@ ridgereg<-setRefClass("ridgereg",fields=list(formula="formula",beta_ridge="matri
                          cat(sep="\n")
                          cat(sep="      ",beta_ridge)
                        },
-                       predict=function()
+                       predict=function(datanew=NULL)
                        {"Returns predicted values"
-                         return(y_hat)
+                         if(is.null(datanew)){
+                           return(y_hat)
+                         }else{
+                           X_new<-model.matrix(formula,datanew)[,-1]
+                           X_norm_new<-matrix()
+                           X_norm_new<-scale(X_new,center=TRUE,scale=TRUE)
+                           y_hat_new <- X_new %*% t(beta_ridge)
+                           return(y_hat_new)
+                         }
                        },
                        coef=function()
                        {"Returns ridge regression regression coefficients"
