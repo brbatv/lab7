@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -14,8 +14,85 @@ The lab7ab package provides a RC class named `ridgereg` to apply ridge regressio
 
 ```{r,include=FALSE}
 library(devtools)
-install_github("brbatv/lab7",force=TRUE)
+#install_github("brbatv/lab7",force=TRUE)
 library(lab7ab)
+library(MASS)
+library(mlbench)
+library(caret)
+library(leaps)
+data("BostonHousing")
 ```
 
+## Splitting the data
+After loading the BostonHousing data frame, we will partitionize it in two parts. 
+
+```{r}
+training_data <- createDataPartition(BostonHousing$crim,p = 0.55)
+
+training <- BostonHousing[training_data$Resample1, ]
+test <- BostonHousing[-training_data$Resample1, ]
+```
+
+
+## Select best model by choosing variables
+We now need to select the best variables to predict crim.
+
+```{r,results:hide}
+full_model <- lm(crim~.,data=training)
+
+```
+```{r,include=FALSE}
+
+step <- stepAIC(full_model, direction="backward")
+```
+
+```{r,eval=FALSE,warning=FALSE}
+
+step <- stepAIC(full_model, direction="backward")
+```
+
+```{r,warning=FALSE}
+step$anova # display results 
+```
+The backward method used in stepAIC gave us a model with the lowest AIC :  `crim ~ zn + rm + dis + rad + medv`
+
+```{r,warning=FALSE}
+lm1 <- caret::train(crim ~ ., data=training, method = 'leapForward')
+lm1
+summary(lm1)
+```
+
+The leapForward method gave us a model with only two variables `crim ~
+
+## Using our own model in train function from caret package
+```{r}
+ridgeex <- list(type="Regression", 
+              library="lab7ab",
+              loop=NULL,
+              prob=NULL,
+              parameters=data.frame(parameter="lambda",class="numeric",label="lambda"),
+              grid=function(y,x, len=NULL, search="grid")
+              {
+                data.frame(lambda=c(0.1,0.5,1,2))
+              },
+              fit=function (x, y, wts, param, lev, last, classProbs, ...) 
+              {
+                dat <- if (is.data.frame(x)) 
+                  x
+                else as.data.frame(x)
+                dat$.outcome <- y
+                out <- ridgereg$new(formula=.outcome ~ ., data = dat, lambda=param$lambda, ...)
+                out
+              },
+              predict = function (modelFit, newdata, submodels = NULL,preProc=NULL) 
+              { 
+                if (!is.data.frame(newdata)) 
+                  newdata <- as.data.frame(newdata)
+                
+                modelFit$predict(newdata)
+              })
+
+
+testo<-caret::train(crim ~ ., data=training, method = ridgeex)
+```
 

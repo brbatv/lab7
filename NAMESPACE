@@ -3,10 +3,8 @@
 export(ridgereg)
 export(visualize_airport_delays)
 exportClasses(ridgereg)
-
 import(dplyr)
 import(ggplot2)
 import(nycflights13)
 importFrom(ggrepel,geom_text_repel)
 importFrom(methods,new)
-
