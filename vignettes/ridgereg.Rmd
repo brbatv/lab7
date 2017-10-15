@@ -38,11 +38,12 @@ test <- BostonHousing[-training_data$Resample1, ]
 We now need to select the best variables to predict crim.
 
 ```{r,results:hide}
+set.seed(27)
 full_model <- lm(crim~.,data=training)
 
 ```
 ```{r,include=FALSE}
-
+set.seed(27)
 step <- stepAIC(full_model, direction="backward")
 ```
 
@@ -93,6 +94,40 @@ ridgeex <- list(type="Regression",
               })
 
 
-testo<-caret::train(crim ~ ., data=training, method = ridgeex)
+Ridgereg_model <- list(
+    type = c("Regression"),
+    library = "lab7ab",
+    loop = NULL,
+    prob = NULL)
+
+Ridgereg_model$parameters <- data.frame(parameter = "lambda",
+                                        class = "numeric",
+                                        label = "lambda")
+
+Ridgereg_model$grid <- function (x, y, len = NULL, search = "grid"){
+    data.frame(lambda = seq(0,2,by=0.25))
+}
+
+Ridgereg_model$fit <- function (x, y, wts, param, lev, last, classProbs, ...){
+    dat <- if (is.data.frame(x))
+        x
+    else
+        as.data.frame(x)
+    dat$.outcome <- y
+    
+    output <-
+        ridgereg$new(.outcome ~ ., data = dat, lambda = param$lambda, ...)
+    
+    output
+}
+
+
+Ridgereg_model$predict <- function(modelFit, newdata, preProc = NULL, submodels = NULL){
+    if (!is.data.frame(newdata))
+        newdata <- as.data.frame(newdata)
+    modelFit$predict(newdata)
+}
+
+#testo<-caret::train(crim ~ ., data=training, method = Ridgereg_model)
 ```
 
