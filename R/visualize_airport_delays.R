@@ -1,3 +1,4 @@
+#'
 #'Visualize airport delays
 #'
 #'@field 
@@ -14,7 +15,10 @@ visualize_airport_delays<-function(){
   airport<-unique(c(unique(flights$origin),unique(flights$dest))) #airports flights informations
   
   ariport_dest<-unique(flights$dest)
-  positions<-data[data[,1] %in% airport,]
+  
+  pos<-data[data[,1] %in% airport,]
+  positions<-data.frame(pos$name,pos$longitude,pos$latitude)
+  names(positions)<-c("name","longitude","latitude")
   
   #destination, arrival delay mean
   delay_mean_dest <-data.frame(name=flights$dest,del=flights$arr_delay) %>% 
@@ -27,12 +31,18 @@ visualize_airport_delays<-function(){
                   summarize(mean=round(mean(del, na.rm=TRUE)))
   
   #union between departure airport and arrival airport
-  un<-union(mutate(delay_mean_dest,name=factor(name,levels=airport)),mutate(delay_mean_dep,name=factor(name,levels=airport)))
+  delay_mean_dest$name<-as.character(delay_mean_dest$name)
+  delay_mean_dep$name<-as.character(delay_mean_dep$name)
+  u<-union(delay_mean_dep,delay_mean_dest)
+  
+  un <-data.frame(name=u$name,mean=u$mean)
   
   #conclusive dataframe with all we need to plot the mean delay
-  info<-left_join(mutate(positions,name=factor(name,levels=airport)),mutate(un,name=factor(name,levels=airport)),by="name")
- 
   
+  positions$name<-as.character(positions$name)
+  un$name<-as.character(un$name)
+  info<-left_join(positions,un,by="name")
+ 
   fig<-ggplot(info, aes(x=longitude,y=latitude,col=mean)) + geom_text_repel(aes(label=name), size = 3,col="black") + geom_point(size=7,shape=20,stroke=1) + labs(x = "Longitude", y = "Latitude") +
     ggtitle("Mean delay of flights")+scale_colour_gradient(low = "white", high = "red")+geom_text(aes(x=longitude,y=latitude, label=mean),col="black",size=3,parse=TRUE)+scale_y_continuous()+scale_x_continuous()+
     theme(panel.border = element_blank(),
@@ -40,5 +50,7 @@ visualize_airport_delays<-function(){
           axis.ticks = element_blank(),
           plot.margin = unit(c(1,5,1,4), "cm")
           )
+  
   return(fig)
+  
 }

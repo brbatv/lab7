@@ -19,3 +19,4 @@ Suggests:
     ggplot2,
     ggrepel
 RoxygenNote: 6.0.1
+VignetteBuilder: knitr
