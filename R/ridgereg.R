@@ -2,12 +2,15 @@
 
 #'A RC class to use ridge regression
 #'
-#'@field 
+#'@field formula formula
+#'@field data data frame
+#'@field lambda lambda
 #'
 #'@details Please look at the vignette. 
-#'@examples my_address<-address$new("Linkoping university")
+#'@examples r <- ridgereg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris,lambda=2)
 #'@exportClass ridgereg
 #'@export ridgereg
+#'@importFrom  methods new
 
 
 #data<-iris

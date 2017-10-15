@@ -14,7 +14,11 @@ Please look at the vignette.
 \section{Fields}{
 
 \describe{
-\item{\code{}}{}
+\item{\code{formula}}{formula}
+
+\item{\code{data}}{data frame}
+
+\item{\code{lambda}}{lambda}
 }}
 
 \section{Methods}{
@@ -28,5 +32,5 @@ Please look at the vignette.
 }}
 
 \examples{
-my_address<-address$new("Linkoping university")
+r <- ridgereg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris,lambda=2)
 }
