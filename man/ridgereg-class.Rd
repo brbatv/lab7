@@ -20,6 +20,10 @@ Please look at the vignette.
 \section{Methods}{
 
 \describe{
+\item{\code{coef()}}{Returns ridge regression regression coefficients}
+
+\item{\code{predict()}}{Returns predicted values}
+
 \item{\code{print()}}{Prints the input and the coefficients in a user-friedly way}
 }}
 
