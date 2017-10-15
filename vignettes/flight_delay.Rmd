@@ -1,0 +1,43 @@
+---
+title: "Flight delay"
+author: "Alessia De Biase"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+In this file we try to predict the delay of each flight using the `ridgereg()` function from the package `lab7ab`.
+
+```{r include=FALSE}
+library(devtools)
+install_github("brbatv/lab7",force=TRUE)
+library(lab7ab)
+library(nycflights13)
+```
+
+## Cleaning "weather" and "flights" datasets:
+
+Exploring the dataset from `nycflights13` library.
+
+The dataset weather has the following variables: 
+
+```{r echo=FALSE,warning=FALSE}
+colnames(weather)
+```
+The variable which have a predictive value are: `origin`,`month`, `day`, `hour`, ``
+
+The dataset flights has the following variables:
+
+```{r echo=FALSE,warning=FALSE}
+colnames(flights)
+```
+
+## Cleaning "weather" and "flights" datasets:
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(head(mtcars, 10))
+```
+
