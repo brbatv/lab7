@@ -1,17 +1,23 @@
 #'
 #'Visualize airport delays
 #'
-#'@field 
+#'
 #'
 #'@details Plot of geographical position of airports of the "flights" dataset with their mean delay.
-#'@examples visualize_airport_delays()
+# #'@examples visualize_airport_delays()
 #'@export visualize_airport_delays
+#'@import nycflights13
+#'@import dplyr
+#'@import ggplot2
+#'@importFrom ggrepel geom_text_repel
 
 #require nycflights13 package and ggplot2, dplyr and ggrepel <- already in description
 
+
 visualize_airport_delays<-function(){
-  
-  data<-data.frame(name=airports$faa,longitude=airports$lon,latitude=airports$lat)
+  airports<-nycflights13::airports
+  flights<-nycflights13::flights
+  data<-data.frame("name"=airports$faa,longitude=airports$lon,latitude=airports$lat)
   airport<-unique(c(unique(flights$origin),unique(flights$dest))) #airports flights informations
   
   ariport_dest<-unique(flights$dest)
@@ -19,16 +25,16 @@ visualize_airport_delays<-function(){
   pos<-data[data[,1] %in% airport,]
   positions<-data.frame(pos$name,pos$longitude,pos$latitude)
   names(positions)<-c("name","longitude","latitude")
-  
+
   #destination, arrival delay mean
   delay_mean_dest <-data.frame(name=flights$dest,del=flights$arr_delay) %>% 
-               group_by(name) %>% 
-               summarize(mean=round(mean(del, na.rm=TRUE)))
+    group_by(name) %>% 
+    summarize(mean=round(mean(del, na.rm=TRUE)))
   delay_mean_dest <- delay_mean_dest[which(!is.na(delay_mean_dest[,2])),]
   
   delay_mean_dep <-data.frame(name=flights$origin,del=flights$dep_delay) %>% 
-                  group_by(name) %>% 
-                  summarize(mean=round(mean(del, na.rm=TRUE)))
+    group_by(name) %>% 
+    summarize(mean=round(mean(del, na.rm=TRUE)))
   
   #union between departure airport and arrival airport
   delay_mean_dest$name<-as.character(delay_mean_dest$name)
@@ -38,7 +44,7 @@ visualize_airport_delays<-function(){
   un <-data.frame(name=u$name,mean=u$mean)
   
   #conclusive dataframe with all we need to plot the mean delay
-  
+
   positions$name<-as.character(positions$name)
   un$name<-as.character(un$name)
   info<-left_join(positions,un,by="name")
@@ -49,8 +55,8 @@ visualize_airport_delays<-function(){
           plot.title = element_text(size = rel(1.5), face='bold',vjust = 1.5,hjust = 0.5),
           axis.ticks = element_blank(),
           plot.margin = unit(c(1,5,1,4), "cm")
-          )
-  
-  return(fig)
-  
+
+    )
+  print(fig)
+
 }

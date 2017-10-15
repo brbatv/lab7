@@ -1,5 +1,5 @@
 ---
-title: "RC class for Google Geooding API"
+title: "RC class for ridge regression"
 author: "Bruno Barakat"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -9,6 +9,13 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-The lab7ab package provides a RC class named `address` to use geocoding and reverse geocoding from Google API.
+The lab7ab package provides a RC class named `ridgereg` to apply ridge regression.
+
+
+```{r,include=FALSE}
+library(devtools)
+install_github("brbatv/lab7",force=TRUE)
+library(lab7ab)
+```
 
 

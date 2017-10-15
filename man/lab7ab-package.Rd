@@ -16,4 +16,3 @@
 Maintainer: \packageMaintainer{lab7ab}
 }
 \keyword{ package }
-\examples{}

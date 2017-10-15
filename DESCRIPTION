@@ -11,12 +11,13 @@ Depends: R(>= 2.10)
 License: GPL
 Suggests:
     testthat,
-    methods,
     knitr,
-    rmarkdown,
+    rmarkdown
+Imports:
     nycflights13,
     dplyr,
     ggplot2,
-    ggrepel
+    ggrepel,
+    methods
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr

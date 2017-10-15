@@ -2,12 +2,16 @@
 
 #'A RC class to use ridge regression
 #'
-#'@field 
+#'@field formula formula
+#'@field data data frame
+#'@field lambda lambda
 #'
 #'@details Please look at the vignette. 
-#'@examples my_address<-address$new("Linkoping university")
+#'@examples r <- ridgereg$new(Petal.Length~Sepal.Width+Sepal.Length, data=iris,lambda=2)
 #'@exportClass ridgereg
 #'@export ridgereg
+#'@importFrom  methods new
+
 
 #data<-iris
 #formula<-Petal.Length ~ Sepal.Width + Sepal.Length
@@ -18,12 +22,13 @@
 
 #ridgereg$new(formula=Petal.Length ~ Sepal.Width + Sepal.Length,data=iris,lambda=2)
 
-ridgereg<-setRefClass("ridgereg",fields=list(formula="formula",beta_ridge="matrix",y_hat="matrix",name_of_data_input="character"),
+ridgereg<-setRefClass("ridgereg",fields=list(formula="formula",beta_ridge="matrix",y_hat="matrix",name_of_data_input="character",lambda="numeric"),
                      methods=list(
                        initialize=function(formula,data,lambda)
                        { 
                          name_of_data_input<<-deparse(substitute(data))
                          formula<<-formula
+                         lambda<<-lambda
                          
                          dependent_variable_name<-all.vars(formula)[1]
                          Y<-data[[dependent_variable_name]] # vector of dependent variable
@@ -43,14 +48,22 @@ ridgereg<-setRefClass("ridgereg",fields=list(formula="formula",beta_ridge="matri
                        {
                          "Prints the input and the coefficients in a user-friedly way"
                          cat("Call: \n")
-                         cat(paste0("ridgereg(formula = ",format(formula),", data = ",name_of_data_input,")\n\n"))
+                         cat(paste0("ridgereg(formula = ",format(formula),", data = ",name_of_data_input,", lambda = ",format(lambda),")\n\n"))
                          
                          cat("Coefficients: \n")
                          cat(" ")
-                         cat(names(beta_ridge))
+                         cat(colnames(beta_ridge))
                          cat(" ")
                          cat(sep="\n")
                          cat(sep="      ",beta_ridge)
+                       },
+                       predict=function()
+                       {"Returns predicted values"
+                         return(y_hat)
+                       },
+                       coef=function()
+                       {"Returns ridge regression regression coefficients"
+                         return(beta_ridge)
                        }
                        
                      ))
