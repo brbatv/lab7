@@ -62,12 +62,12 @@ ridgereg<-setRefClass("ridgereg",fields=list(formula="formula",beta_ridge="matri
                        predict = function(newdata = NULL) {
                          
                          if(is.null(newdata)){
-                           result <- (Fitted_values = round(y_hat, 2))
+                           result <- y_hat
                          } else{
                            newdata <- data.frame(newdata)
                            X <- as.matrix(scale(newdata))
                            beta_final <-    matrix(beta_ridge, nrow=length(beta_ridge))
-                           pred <- (X %*% beta_final)
+                           pred <- (X[,attributes(beta_ridge)$dimnames[[2]]] %*% beta_final)
                            result <- pred[,1]
                          }
                          return(result)

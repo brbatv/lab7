@@ -3,7 +3,7 @@ library(devtools)
 library(caret)
 library(nycflights13)
 library(dplyr)
-install_github("brbatv/lab7",force=TRUE)
+#install_github("brbatv/lab7",force=TRUE)
 library(lab7ab)
 
 ## ----echo=FALSE,warning=FALSE--------------------------------------------
@@ -46,7 +46,7 @@ formula=arr_delay~month+day+sched_dep_time+sched_arr_time+dep_delay+temp+dewp+wi
 mod<-ridgereg$new(formula=formula, data=train,lambda=10^8)
 
 Y_validation<-validation$arr_delay
-Y_predicted <- mod$predict(datanew=validation)
+Y_predicted <- mod$predict(newdata=validation)
 
 #calculating the error
 error= Y_predicted - Y_validation
@@ -61,7 +61,7 @@ best_lambda=10^8
 mod<-ridgereg$new(formula=formula, data=train,lambda=best_lambda)  
   
 Y_test<-test$arr_delay
-Y_predicted2 <- mod$predict(datanew=test)
+Y_predicted2 <- mod$predict(newdata=test)
 
 error2= Y_predicted2 - Y_test
 
