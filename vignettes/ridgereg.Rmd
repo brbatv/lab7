@@ -13,8 +13,9 @@ The lab7ab package provides a RC class named `ridgereg` to apply ridge regressio
 
 
 ```{r,include=FALSE}
+set.seed(27)
 library(devtools)
-install_github("brbatv/lab7",force=TRUE)
+#install_github("brbatv/lab7",force=TRUE)
 library(lab7ab)
 library(MASS)
 library(mlbench)
@@ -27,6 +28,7 @@ data("BostonHousing")
 After loading the BostonHousing data frame, we will partitionize it in two parts. 
 
 ```{r}
+set.seed(27)
 training_data <- createDataPartition(BostonHousing$crim,p = 0.55)
 
 training <- BostonHousing[training_data$Resample1, ]
@@ -67,6 +69,7 @@ The leapForward method gave us a model with only two variables `crim ~
 
 ## Using our own model in train function from caret package
 ```{r}
+set.seed(27)
 ridgeex <- list(type="Regression", 
               library="lab7ab",
               loop=NULL,
@@ -74,7 +77,7 @@ ridgeex <- list(type="Regression",
               parameters=data.frame(parameter="lambda",class="numeric",label="lambda"),
               grid=function(y,x, len=NULL, search="grid")
               {
-                data.frame(lambda=c(0.1,0.5,1,2))
+                data.frame(lambda = seq(0,200,by=5))
               },
               fit=function (x, y, wts, param, lev, last, classProbs, ...) 
               {
@@ -94,41 +97,8 @@ ridgeex <- list(type="Regression",
               })
 
 
-Ridgereg_model <- list(
-    type = c("Regression"),
-    library = "lab7ab",
-    loop = NULL,
-    prob = NULL)
 
-Ridgereg_model$parameters <- data.frame(parameter = "lambda",
-                                        class = "numeric",
-                                        label = "lambda")
-
-Ridgereg_model$grid <- function (x, y, len = NULL, search = "grid"){
-    data.frame(lambda = seq(0,2,by=0.25))
-}
-
-Ridgereg_model$fit <- function (x, y, wts, param, lev, last, classProbs, ...){
-    dat <- if (is.data.frame(x))
-        x
-    else
-        as.data.frame(x)
-    dat$outcome <- y
-    
-    output <-
-        ridgereg$new(outcome ~ ., data = dat, lambda = param$lambda, ...)
-    
-    output
-}
-
-
-Ridgereg_model$predict <- function(modelFit, newdata, preProc = NULL, submodels = NULL){
-    if (!is.data.frame(newdata))
-        newdata <- as.data.frame(newdata)
-    modelFit$predict(newdata)
-}
-
-testo<-caret::train(crim ~ zn + rm + dis + rad + medv, data=training, method = Ridgereg_model)
-#testo
+testo<-caret::train(crim ~ ., data=training, method = ridgeex)
+testo
 ```
 

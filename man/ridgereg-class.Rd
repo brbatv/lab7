@@ -26,8 +26,6 @@ Please look at the vignette.
 \describe{
 \item{\code{coef()}}{Returns ridge regression regression coefficients}
 
-\item{\code{predict(datanew = NULL)}}{Returns predicted values}
-
 \item{\code{print()}}{Prints the input and the coefficients in a user-friedly way}
 }}
 

@@ -44,6 +44,7 @@ ridgereg<-setRefClass("ridgereg",fields=list(formula="formula",beta_ridge="matri
                          y_hat <<- X %*% t(beta_ridge)                                               
                          
                        } ,
+                       
                        print=function()
                        {
                          "Prints the input and the coefficients in a user-friedly way"
@@ -57,16 +58,19 @@ ridgereg<-setRefClass("ridgereg",fields=list(formula="formula",beta_ridge="matri
                          cat(sep="\n")
                          cat(sep="      ",beta_ridge)
                        },
-                       predict=function(datanew=NULL)
-                       {"Returns predicted values"
-                         if(is.null(datanew)){
-                           return(y_hat)
-                         }else{
-                           X_new<-model.matrix(formula,datanew)[,-1]
-                           X_norm_new<-data.frame(scale(X_new,center=TRUE,scale=TRUE))
-                           y_hat_new <- X_new %*% t(beta_ridge)
-                           return(y_hat_new)
+                       
+                       predict = function(newdata = NULL) {
+                         
+                         if(is.null(newdata)){
+                           result <- (Fitted_values = round(y_hat, 2))
+                         } else{
+                           newdata <- data.frame(newdata)
+                           X <- as.matrix(scale(newdata))
+                           beta_final <-    matrix(beta_ridge, nrow=length(beta_ridge))
+                           pred <- (X %*% beta_final)
+                           result <- pred[,1]
                          }
+                         return(result)
                        },
                        coef=function()
                        {"Returns ridge regression regression coefficients"
@@ -77,14 +81,28 @@ ridgereg<-setRefClass("ridgereg",fields=list(formula="formula",beta_ridge="matri
 
 
 # 
-# predict=function(datanew=NULL)
+# predict=function(newdata=NULL)
 # {"Returns predicted values"
-#   if(is.null(datanew)){
+#   if(is.null(newdata)){
 #     return(y_hat)
 #   }else{
-#     X_new<-model.matrix(formula,datanew)[,-1]
+#     X_new<-model.matrix(formula,newdata)[,-1]
 #     X_norm_new<-data.frame(scale(X_new,center=TRUE,scale=TRUE))
 #     y_hat_new <- X_new %*% t(beta_ridge)
 #     return(y_hat_new)
 #   }
 # },
+
+# predict = function(newdata = NULL) {
+# 
+#   if(is.null(newdata)){
+#     result <- (Fitted_values = round(y_hat, 2))
+#   } else{
+#     newdata <- data.frame(newdata)
+#     X <- as.matrix(scale(newdata))
+#     beta_final <-    matrix(beta_ridge, nrow=length(beta_ridge))
+#     pred <- (X %*% beta_final)
+#     result <- pred[,1]
+#   }
+#   return(result)
+#    },
