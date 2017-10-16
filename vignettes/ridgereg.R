@@ -1,6 +1,6 @@
 ## ----include=FALSE-------------------------------------------------------
 library(devtools)
-#install_github("brbatv/lab7",force=TRUE)
+install_github("brbatv/lab7",force=TRUE)
 library(lab7ab)
 library(MASS)
 library(mlbench)
@@ -15,11 +15,12 @@ training <- BostonHousing[training_data$Resample1, ]
 test <- BostonHousing[-training_data$Resample1, ]
 
 ## ----results:hide--------------------------------------------------------
+set.seed(27)
 full_model <- lm(crim~.,data=training)
 
 
 ## ----include=FALSE-------------------------------------------------------
-
+set.seed(27)
 step <- stepAIC(full_model, direction="backward")
 
 ## ----eval=FALSE,warning=FALSE--------------------------------------------

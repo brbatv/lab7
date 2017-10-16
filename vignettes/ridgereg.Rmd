@@ -14,7 +14,7 @@ The lab7ab package provides a RC class named `ridgereg` to apply ridge regressio
 
 ```{r,include=FALSE}
 library(devtools)
-#install_github("brbatv/lab7",force=TRUE)
+install_github("brbatv/lab7",force=TRUE)
 library(lab7ab)
 library(MASS)
 library(mlbench)
@@ -113,10 +113,10 @@ Ridgereg_model$fit <- function (x, y, wts, param, lev, last, classProbs, ...){
         x
     else
         as.data.frame(x)
-    dat$.outcome <- y
+    dat$outcome <- y
     
     output <-
-        ridgereg$new(.outcome ~ ., data = dat, lambda = param$lambda, ...)
+        ridgereg$new(outcome ~ ., data = dat, lambda = param$lambda, ...)
     
     output
 }
@@ -128,6 +128,7 @@ Ridgereg_model$predict <- function(modelFit, newdata, preProc = NULL, submodels 
     modelFit$predict(newdata)
 }
 
-#testo<-caret::train(crim ~ ., data=training, method = Ridgereg_model)
+testo<-caret::train(crim ~ zn + rm + dis + rad + medv, data=training, method = Ridgereg_model)
+#testo
 ```
 
